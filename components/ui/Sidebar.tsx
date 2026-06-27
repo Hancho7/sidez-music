@@ -9,11 +9,11 @@ import { useState } from "react";
 import {
   LayoutDashboard, Music2, FileText, Library, Tag, Mic2, AlignLeft,
   ScrollText, DollarSign, ShoppingBag, ShoppingCart, Users, Ticket,
-  BadgePercent, Package, Drum, Shirt, Wrench, ClipboardList, Newspaper,
-  ImagePlay, UsersRound, Megaphone, BarChart3, Settings,
-  ChevronLeft, ChevronRight, ChevronDown,
+  BadgePercent, Newspaper, ImagePlay, UsersRound, Megaphone, BarChart3,
+  Settings, ChevronLeft, ChevronRight, ChevronDown,
 } from "lucide-react";
 import { useSidebar } from "./SidebarContext";
+import Button from "./Button";
 
 type NavChild = { label: string; href: string; icon: React.ReactNode };
 type NavItem = { label: string; icon: React.ReactNode; href?: string; children?: NavChild[] };
@@ -46,20 +46,6 @@ const NAV: NavItem[] = [
       { label: "Coupons", href: "/store/coupons", icon: <BadgePercent size={15} /> },
     ],
   },
-  {
-    label: "Digital Products", icon: <Package size={18} />,
-    children: [
-      { label: "Sound Kits", href: "/products/sound-kits", icon: <Drum size={15} /> },
-      { label: "Merchandise", href: "/products/merchandise", icon: <Shirt size={15} /> },
-    ],
-  },
-  {
-    label: "Services", icon: <Wrench size={18} />,
-    children: [
-      { label: "Services", href: "/services/list", icon: <Wrench size={15} /> },
-      { label: "Orders", href: "/services/orders", icon: <ClipboardList size={15} /> },
-    ],
-  },
   { label: "Content", icon: <Newspaper size={18} />, href: "/content" },
   { label: "Media", icon: <ImagePlay size={18} />, href: "/media" },
   { label: "Users", icon: <UsersRound size={18} />, href: "/users" },
@@ -71,7 +57,6 @@ const NAV: NavItem[] = [
 const S = {
   sidebar: { background: "#000000", borderRight: "1px solid #1f1f1f" },
   logoBorder: { borderBottom: "1px solid #1f1f1f" },
-  collapseBtn: { background: "#141414", border: "1px solid #1f1f1f", color: "#555555" },
   navArea: { scrollbarWidth: "thin" as const, scrollbarColor: "rgba(255,255,255,0.1) transparent" },
   footerBorder: { borderTop: "1px solid #1f1f1f" },
   avatar: { background: "#1f1f1f" },
@@ -87,6 +72,9 @@ const S = {
   rowHoverBg: "#141414",
 };
 
+// Vertical centre of the logo bar: py-5 = 20px top + 20px bottom, logo = 32px → centre at 36px
+const TOGGLE_TOP = 36;
+
 export default function Sidebar() {
   const pathname = usePathname();
   const { collapsed, toggle } = useSidebar();
@@ -101,36 +89,64 @@ export default function Sidebar() {
   const isGroupActive = (item: NavItem) => item.children?.some(c => pathname.startsWith(c.href));
 
   return (
+    /*
+     * overflow-hidden is removed from the aside so the toggle button can
+     * hang over the right edge when collapsed. The inner nav still clips
+     * horizontally via overflow-x-hidden on its own element.
+     */
     <motion.aside
       animate={{ width: collapsed ? 72 : 256 }}
       transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
-      className="fixed top-0 left-0 h-dvh flex flex-col overflow-hidden z-[300]"
+      className="fixed top-0 left-0 h-dvh flex flex-col z-[300]"
       style={S.sidebar}
       aria-label="Main navigation"
     >
-      {/* Logo */}
+      {/* ── Logo bar ── */}
       <div className="flex items-center gap-3 px-4 py-5 flex-shrink-0" style={S.logoBorder}>
         <Image
           src="/assets/logo/ss-no-bg.png"
           alt="Sidez Logo"
           width={32}
           height={32}
-          className="object-contain"
+          className="object-contain flex-shrink-0"
           priority
         />
-        <button
-          onClick={toggle}
-          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-          className="ml-auto flex items-center justify-center w-6 h-6 rounded-lg flex-shrink-0 cursor-pointer"
-          style={S.collapseBtn}
-          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "#1a1a1a"; (e.currentTarget as HTMLElement).style.color = "#ffffff"; }}
-          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "#141414"; (e.currentTarget as HTMLElement).style.color = "#555555"; }}
-        >
-          {collapsed ? <ChevronRight size={13} /> : <ChevronLeft size={13} />}
-        </button>
       </div>
 
-      {/* Nav */}
+      {/*
+       * ── Collapse toggle ──
+       *
+       * Absolutely positioned relative to the aside so it can overhang
+       * the right border without being clipped.
+       *
+       * Expanded  → right edge of the button aligns with the sidebar border
+       *             (translateX(50%) centres it on the border line)
+       * Collapsed → pulled a little further right (translateX(60%)) so
+       *             ~60 % of the button peeks out, hinting it can be opened
+       *
+       * top is computed to land in the vertical centre of the logo bar:
+       *   py-5 (20px) + half of logo (16px) = 36px, minus half of btn (12px) = 24px
+       */}
+      <motion.div
+        className="absolute z-[400]"
+        style={{ top: TOGGLE_TOP - 12 }}   // 24px — vertically centred on the logo row
+        animate={{
+          right: collapsed ? -6 : 0,        // -6 → half the 12px button radius peeks past the border
+          x: collapsed ? "50%" : "50%",     // always translate so the button straddles the right edge
+        }}
+        transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+      >
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={toggle}
+          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          icon={collapsed ? <ChevronRight size={13} /> : <ChevronLeft size={13} />}
+          className="w-6 h-6 !px-0 !py-0 !rounded-[10px] !border-[#2a2a2a] !bg-[#111111] !text-[#555555] hover:!text-white hover:!bg-[#1a1a1a]"
+        />
+      </motion.div>
+
+      {/* ── Nav ── */}
       <nav className="flex-1 overflow-y-auto overflow-x-hidden py-3 px-3" style={S.navArea}>
         <ul className="flex flex-col gap-0.5 list-none m-0 p-0">
           {NAV.map(item => {
@@ -145,7 +161,7 @@ export default function Sidebar() {
                   <button
                     onClick={() => toggleGroup(item.label)}
                     aria-expanded={groupOpen}
-                    className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl border-0 bg-transparent text-left cursor-pointer whitespace-nowrap relative"
+                    className="flex items-center gap-3 w-full px-3 py-2.5 rounded-[10px] border-0 bg-transparent text-left cursor-pointer whitespace-nowrap relative"
                     style={groupActive ? S.rowActive : S.rowIdle}
                     onMouseEnter={e => { if (!groupActive) { (e.currentTarget as HTMLElement).style.background = S.rowHoverBg; (e.currentTarget as HTMLElement).style.color = "#ffffff"; } }}
                     onMouseLeave={e => { if (!groupActive) { (e.currentTarget as HTMLElement).style.background = "transparent"; (e.currentTarget as HTMLElement).style.color = "#a0a0a0"; } }}
@@ -153,6 +169,7 @@ export default function Sidebar() {
                     <span className="flex items-center flex-shrink-0" style={groupActive ? S.iconActive : S.iconIdle}>
                       {item.icon}
                     </span>
+
                     <AnimatePresence initial={false}>
                       {!collapsed && (
                         <motion.span
@@ -166,6 +183,7 @@ export default function Sidebar() {
                         </motion.span>
                       )}
                     </AnimatePresence>
+
                     <AnimatePresence initial={false}>
                       {!collapsed && (
                         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
@@ -180,14 +198,15 @@ export default function Sidebar() {
                         </motion.div>
                       )}
                     </AnimatePresence>
+
                     {collapsed && groupActive && (
-                      <span className="absolute right-2 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-white" />
+                      <span className="absolute right-2 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-[10px] bg-white" />
                     )}
                   </button>
                 ) : (
                   <Link
                     href={item.href!}
-                    className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl no-underline whitespace-nowrap relative"
+                    className="flex items-center gap-3 w-full px-3 py-2.5 rounded-[10px] no-underline whitespace-nowrap relative"
                     style={leafActive ? { ...S.rowActive, background: "rgba(255,255,255,0.06)" } : S.rowIdle}
                     onMouseEnter={e => { if (!leafActive) { (e.currentTarget as HTMLElement).style.background = S.rowHoverBg; (e.currentTarget as HTMLElement).style.color = "#ffffff"; } }}
                     onMouseLeave={e => { if (!leafActive) { (e.currentTarget as HTMLElement).style.background = "transparent"; (e.currentTarget as HTMLElement).style.color = "#a0a0a0"; } }}
@@ -195,6 +214,7 @@ export default function Sidebar() {
                     <span className="flex items-center flex-shrink-0" style={leafActive ? S.iconActive : S.iconIdle}>
                       {item.icon}
                     </span>
+
                     <AnimatePresence initial={false}>
                       {!collapsed && (
                         <motion.span
@@ -208,8 +228,9 @@ export default function Sidebar() {
                         </motion.span>
                       )}
                     </AnimatePresence>
+
                     {collapsed && leafActive && (
-                      <span className="absolute right-2 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-white" />
+                      <span className="absolute right-2 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-[10px] bg-white" />
                     )}
                   </Link>
                 )}
@@ -231,13 +252,13 @@ export default function Sidebar() {
                           <li key={child.href} className="list-none">
                             <Link
                               href={child.href}
-                              className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] no-underline relative whitespace-nowrap"
+                              className="flex items-center gap-2.5 px-3 py-2 rounded-[10px] text-[13px] no-underline relative whitespace-nowrap"
                               style={childActive ? S.childActive : S.childIdle}
                               onMouseEnter={e => { if (!childActive) { (e.currentTarget as HTMLElement).style.background = S.rowHoverBg; (e.currentTarget as HTMLElement).style.color = "#ffffff"; } }}
                               onMouseLeave={e => { if (!childActive) { (e.currentTarget as HTMLElement).style.background = "transparent"; (e.currentTarget as HTMLElement).style.color = "#555555"; } }}
                             >
                               <span
-                                className="absolute left-[-13px] top-1/2 -translate-y-1/2 w-px rounded-full"
+                                className="absolute left-[-13px] top-1/2 -translate-y-1/2 w-px rounded-[10px]"
                                 style={childActive ? S.tickActive : S.tickIdle}
                               />
                               <span className="flex items-center flex-shrink-0">{child.icon}</span>
@@ -255,14 +276,19 @@ export default function Sidebar() {
         </ul>
       </nav>
 
-      {/* User footer */}
-      <div className="flex items-center gap-3 px-4 py-4 flex-shrink-0" style={S.footerBorder}>
+      {/* ── User footer ── */}
+      <Link
+        href="/account-settings"
+        className="flex items-center gap-3 px-4 py-4 flex-shrink-0 no-underline"
+        style={S.footerBorder}
+      >
         <div
           className="w-9 h-9 rounded-full flex items-center justify-center text-[12px] font-bold text-white flex-shrink-0 tracking-wide"
           style={S.avatar}
         >
           JC
         </div>
+
         <AnimatePresence initial={false}>
           {!collapsed && (
             <motion.div
@@ -281,7 +307,7 @@ export default function Sidebar() {
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
+      </Link>
     </motion.aside>
   );
 }
