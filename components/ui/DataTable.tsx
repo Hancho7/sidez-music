@@ -15,7 +15,7 @@ interface TableRootProps {
 function TableRoot({ children, minWidth = 800, emptyState, isEmpty }: TableRootProps) {
   if (isEmpty && emptyState) return <>{emptyState}</>;
   return (
-    <div className="bg-surface border border-[color:var(--border-subtle)] rounded-2xl overflow-hidden">
+    <div className="bg-surface border border-[color:var(--border-subtle)] rounded-[10px] overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full border-collapse" style={{ minWidth }}>
           {children}
@@ -183,7 +183,7 @@ function TableActionBtn({ onClick, icon, danger = false, title, disabled }: Acti
       onClick={e => { e.stopPropagation(); onClick(e); }}
       title={title}
       disabled={disabled}
-      className={`w-7 h-7 rounded-lg flex items-center justify-center border-0 bg-transparent cursor-pointer transition-colors disabled:opacity-40 disabled:cursor-not-allowed
+      className={`w-7 h-7 rounded-[10px] flex items-center justify-center border-0 bg-transparent cursor-pointer transition-colors disabled:opacity-40 disabled:cursor-not-allowed
         ${danger
           ? "text-[color:var(--text-muted)] hover:bg-danger/10 hover:text-danger"
           : "text-[color:var(--text-muted)] hover:bg-elevated hover:text-foreground"
@@ -217,9 +217,9 @@ function StatusBadge({ label, variant, dot = true, onClick }: StatusBadgeProps) 
   return (
     <Tag
       onClick={onClick}
-      className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-semibold border-0 ${BADGE_CLASSES[variant]} ${onClick ? "cursor-pointer" : ""}`}
+      className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[10px] text-[10px] font-semibold border-0 ${BADGE_CLASSES[variant]} ${onClick ? "cursor-pointer" : ""}`}
     >
-      {dot && <span className="w-1.5 h-1.5 rounded-full bg-current" />}
+      {dot && <span className="w-1.5 h-1.5 rounded-[10px] bg-current" />}
       {label}
     </Tag>
   );
@@ -235,8 +235,8 @@ interface EmptyStateProps {
 
 function TableEmptyState({ icon, title, message }: EmptyStateProps) {
   return (
-    <div className="bg-surface border border-[color:var(--border-subtle)] rounded-2xl py-20 flex flex-col items-center gap-4 text-center px-8">
-      <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center">
+    <div className="bg-surface border border-[color:var(--border-subtle)] rounded-[10px] py-20 flex flex-col items-center gap-4 text-center px-8">
+      <div className="w-14 h-14 rounded-[10px] bg-accent/10 flex items-center justify-center">
         {icon}
       </div>
       <div>

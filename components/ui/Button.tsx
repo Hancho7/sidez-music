@@ -2,7 +2,13 @@
 import { type ButtonHTMLAttributes, forwardRef } from "react";
 import { Loader2 } from "lucide-react";
 
-type Variant = "primary" | "secondary" | "ghost" | "danger";
+type Variant =
+  | "primary"
+  | "secondary"
+  | "ghost"
+  | "danger"
+  | "plain"
+  | "dashed";
 type Size = "sm" | "md" | "lg";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -37,13 +43,38 @@ const VARIANT_CLASSES: Record<Variant, string> = {
     "hover:bg-danger/20",
     "disabled:opacity-50 disabled:cursor-not-allowed",
   ].join(" "),
+
+  plain: [
+    "bg-transparent border-0 shadow-none",
+    "text-[color:var(--text-secondary)]",
+    "hover:text-foreground",
+    "disabled:opacity-50 disabled:cursor-not-allowed",
+  ].join(" "),
+
+  dashed: [
+    "bg-transparent",
+    "border border-dashed border-[#31386d]",
+    "text-[color:var(--text-muted)]",
+    "hover:border-accent",
+    "hover:text-[color:var(--accent-magenta)]",
+    "disabled:opacity-50 disabled:cursor-not-allowed",
+  ].join(" "),
 };
 
 const SIZE_CLASSES: Record<Size, string> = {
-  sm: "px-3 py-1.5 text-xs gap-1.5 rounded-lg",
-  md: "px-4 py-2.5 text-sm gap-2 rounded-[10px]",
-  lg: "px-5 py-3 text-sm gap-2.5 rounded-xl",
+  sm: "px-3 py-1.5 text-xs gap-1.5",
+  md: "px-4 py-2.5 text-sm gap-2",
+  lg: "px-5 py-3 text-sm gap-2.5",
 };
+
+const BASE_CLASSES = [
+  "inline-flex items-center justify-center",
+  "font-semibold cursor-pointer",
+  "transition-all duration-150",
+  "active:scale-[0.97]",
+  "whitespace-nowrap select-none",
+  "rounded-[10px]",
+].join(" ");
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
@@ -67,8 +98,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         disabled={isDisabled}
         className={[
-          "inline-flex items-center justify-center font-semibold cursor-pointer",
-          "transition-all duration-150 active:scale-[0.97] whitespace-nowrap select-none",
+          BASE_CLASSES,
           VARIANT_CLASSES[variant],
           SIZE_CLASSES[size],
           className,

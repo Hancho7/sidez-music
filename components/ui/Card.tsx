@@ -1,36 +1,4 @@
 // components/ui/Card.tsx
-//
-// Composable card primitives for the Sidez admin dashboard.
-//
-// Every card in the app shares these behaviours:
-//   - Hover lift + border brighten + shadow
-//   - Consistent border-radius (rounded-2xl)
-//   - Consistent bg-surface baseline
-//   - Status badge anatomy
-//   - Action row that fades in on hover
-//
-// Usage patterns:
-//
-//   <Card onClick={...}>
-//     <Card.MediaBanner src={...} aspectRatio="square">
-//       <Card.StatusBadge status="active" />
-//       <Card.FeaturedBadge />
-//     </Card.MediaBanner>
-//     <Card.Body>
-//       <Card.CategoryPill label="Drum Kit" color="magenta" />
-//       <Card.Title>KXNG Trap Essentials</Card.Title>
-//       <Card.Meta>SKU-001 · v1.2</Card.Meta>
-//       <Card.StatRow>
-//         <Card.Stat icon={<Download />} value="2.8k" />
-//         <Card.Stat icon={<TrendingUp />} value="$78k" accent="success" />
-//       </Card.StatRow>
-//       <Card.Actions onEdit={...} onArchive={...} />
-//     </Card.Body>
-//   </Card>
-//
-//   <Card.AccentBand status="active" />   ← thin top stripe used by CouponCard / OfferCard
-//   <Card.BannerWithAvatar ...>           ← ArtistCard-style banner + overlapping avatar
-
 "use client";
 
 import { useState, createContext, useContext } from "react";
@@ -91,7 +59,6 @@ interface CardProps {
   children: React.ReactNode;
   onClick?: () => void;
   className?: string;
-  /** Disable the default hover lift — useful when Card wraps a fully custom layout */
   noHoverLift?: boolean;
 }
 
@@ -105,7 +72,7 @@ function Card({ children, onClick, className = "", noHoverLift = false }: CardPr
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
         className={[
-          "bg-surface border rounded-2xl overflow-hidden flex flex-col transition-all duration-200",
+          "bg-surface border rounded-[10px] overflow-hidden flex flex-col transition-all duration-200",
           onClick ? "cursor-pointer" : "",
           hovered && !noHoverLift
             ? "border-[color:var(--border-default)] -translate-y-0.5 shadow-[var(--shadow-card)]"

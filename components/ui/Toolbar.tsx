@@ -7,7 +7,7 @@ import { Search, ChevronDown, LayoutGrid, List, Table2, Calendar } from "lucide-
 
 function ToolbarRoot({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex items-center gap-3 flex-wrap bg-surface border border-[color:var(--border-subtle)] rounded-2xl px-4 py-3.5">
+    <div className="flex items-center gap-3 flex-wrap bg-surface border border-[color:var(--border-subtle)] rounded-[10px] px-4 py-3.5">
       {children}
     </div>
   );
@@ -114,7 +114,7 @@ function ToolbarCheckbox({ checked, onChange, label }: CheckboxProps) {
         type="checkbox"
         checked={checked}
         onChange={e => onChange(e.target.checked)}
-        className="w-3.5 h-3.5 rounded cursor-pointer accent-[color:var(--accent-purple)]"
+        className="w-3.5 h-3.5 rounded-[10px] cursor-pointer accent-[color:var(--accent-purple)]"
       />
       <span className="text-sm text-[color:var(--text-muted)]">{label}</span>
     </label>
@@ -173,13 +173,13 @@ function ToolbarViewToggle<T extends string>({
   labels = {},
 }: ViewToggleProps<T>) {
   return (
-    <div className="flex bg-[color:var(--bg-input)] border border-[color:var(--border-subtle)] rounded-[9px] p-[3px] gap-0.5">
+    <div className="flex bg-[color:var(--bg-input)] border border-[color:var(--border-subtle)] rounded-[10px] p-[3px] gap-0.5">
       {options.map(v => (
         <button
           key={v}
           onClick={() => onChange(v)}
           title={labels[v] ?? v}
-          className={`w-8 h-8 rounded-[7px] flex items-center justify-center border-0 cursor-pointer transition-colors
+          className={`w-8 h-8 rounded-[10px] flex items-center justify-center border-0 cursor-pointer transition-colors
             ${value === v
               ? "bg-elevated text-foreground"
               : "bg-transparent text-[color:var(--text-muted)] hover:text-foreground"
