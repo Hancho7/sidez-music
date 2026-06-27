@@ -1,6 +1,7 @@
 // components/offers/OffersTable.tsx
 "use client";
 
+import { useMemo } from "react";
 import { Eye, MessageSquare, CheckCircle2, XCircle, Archive, Music2, Library, Package, Wrench } from "lucide-react";
 import DataTable, { useHoveredRow } from "@/components/ui/DataTable";
 import type { Offer, OfferStatus, ProductType } from "@/services/offers/types";
@@ -12,6 +13,15 @@ interface Props {
   onAccept: (o: Offer) => void;
   onReject: (o: Offer) => void;
   onArchive: (o: Offer) => void;
+}
+
+// Extend the Offer type with computed metadata
+interface OfferWithMetadata extends Offer {
+  expiryStatus: {
+    display: string;
+    isExpiring: boolean;
+  };
+  diff: number;
 }
 
 const STATUS_VARIANT: Record<OfferStatus, "success" | "warning" | "cyan" | "danger" | "muted" | "purple"> = {
@@ -44,14 +54,22 @@ function pctDiff(original: number, offer: number) {
   return diff.toFixed(0);
 }
 
-function fmtExpiry(d: string | null) {
-  if (!d) return "—";
-  const diff = Math.ceil((new Date(d).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
-  if (diff < 0) return "Expired";
-  if (diff === 0) return "Today";
-  if (diff === 1) return "Tomorrow";
-  if (diff <= 7) return `${diff}d left`;
-  return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric" });
+// Pure function that computes expiry status - called from useMemo, not during render
+function getExpiryStatus(expiresAt: string | null): { display: string; isExpiring: boolean } {
+  if (!expiresAt) return { display: "—", isExpiring: false };
+
+  const now = new Date();
+  const expiryDate = new Date(expiresAt);
+  const diff = Math.ceil((expiryDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+
+  if (diff < 0) return { display: "Expired", isExpiring: false };
+  if (diff === 0) return { display: "Today", isExpiring: true };
+  if (diff === 1) return { display: "Tomorrow", isExpiring: true };
+  if (diff <= 7) return { display: `${diff}d left`, isExpiring: true };
+  return {
+    display: expiryDate.toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+    isExpiring: false
+  };
 }
 
 function getInitials(name: string) {
@@ -60,6 +78,16 @@ function getInitials(name: string) {
 
 export default function OffersTable({ offers, onRowClick, onCounter, onAccept, onReject, onArchive }: Props) {
   const { hoveredId, setHoveredId } = useHoveredRow();
+
+  // Pre-compute expiry status and diff for all offers using useMemo
+  // This ensures Date.now() is only called when offers change
+  const offersWithMetadata = useMemo<OfferWithMetadata[]>(() => {
+    return offers.map(offer => ({
+      ...offer,
+      expiryStatus: getExpiryStatus(offer.expiresAt),
+      diff: Number(pctDiff(offer.originalPrice, offer.currentOfferAmount)),
+    }));
+  }, [offers]);
 
   return (
     <DataTable
@@ -85,9 +113,8 @@ export default function OffersTable({ offers, onRowClick, onCounter, onAccept, o
       </DataTable.Header>
 
       <DataTable.Body>
-        {offers.map(offer => {
+        {offersWithMetadata.map((offer: OfferWithMetadata) => {
           const isHovered = hoveredId === offer.id;
-          const diff = Number(pctDiff(offer.originalPrice, offer.currentOfferAmount));
           const canAct = offer.status === "pending" || offer.status === "countered";
 
           return (
@@ -134,10 +161,10 @@ export default function OffersTable({ offers, onRowClick, onCounter, onAccept, o
                 ${offer.currentOfferAmount.toFixed(2)}
               </DataTable.Cell>
 
-              {/* Diff */}
+              {/* Diff - using pre-computed value */}
               <DataTable.Cell align="center">
-                <span className={`text-xs font-bold ${diff < 0 ? "text-danger" : diff > 0 ? "text-success" : "text-[color:var(--text-muted)]"}`}>
-                  {diff > 0 ? "+" : ""}{diff}%
+                <span className={`text-xs font-bold ${offer.diff < 0 ? "text-danger" : offer.diff > 0 ? "text-success" : "text-[color:var(--text-muted)]"}`}>
+                  {offer.diff > 0 ? "+" : ""}{offer.diff}%
                 </span>
               </DataTable.Cell>
 
@@ -149,10 +176,10 @@ export default function OffersTable({ offers, onRowClick, onCounter, onAccept, o
                 />
               </DataTable.Cell>
 
-              {/* Expires */}
+              {/* Expires - using pre-computed status */}
               <DataTable.Cell>
-                <span className={`text-xs ${offer.expiresAt && new Date(offer.expiresAt).getTime() - Date.now() < 86400000 * 2 ? "text-danger font-semibold" : "text-[color:var(--text-muted)]"}`}>
-                  {fmtExpiry(offer.expiresAt)}
+                <span className={`text-xs ${offer.expiryStatus.isExpiring ? "text-danger font-semibold" : "text-[color:var(--text-muted)]"}`}>
+                  {offer.expiryStatus.display}
                 </span>
               </DataTable.Cell>
 

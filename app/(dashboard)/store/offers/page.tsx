@@ -92,7 +92,7 @@ export default function OffersPage() {
       productType: data.productType, productId: "new", productTitle: data.productTitle,
       productArtist: "Unknown", productCover: null, licensePlan: data.licensePlan,
       originalPrice: Number(data.originalPrice), currentOfferAmount: Number(data.offerAmount),
-      status: data.status === "pending" ? "pending" : "pending",
+      status: "pending",
       expiresAt: data.expiresAt || null, assignedAdmin: "John Carter",
       revisions: [{ id: `rev-${Date.now()}`, offerId: "new", submittedBy: "John Carter", senderType: "admin", revisionType: "offer", amount: Number(data.offerAmount), message: data.message || "Offer created by admin.", createdAt: now }],
       history: [{ id: `hist-${Date.now()}`, offerId: "new", action: "Offer created by admin", actorId: "admin", actorName: "John Carter", actorType: "admin", notes: data.internalNotes || "", createdAt: now }],
@@ -101,7 +101,6 @@ export default function OffersPage() {
     setOffers(prev => [newOffer, ...prev]);
   };
 
-  // Summary stats for header context
   const pendingCount = offers.filter(o => o.status === "pending").length;
   const counteredCount = offers.filter(o => o.status === "countered").length;
 
@@ -109,40 +108,19 @@ export default function OffersPage() {
     <div className="flex flex-col gap-6">
       <OffersHeader onCreateOffer={() => setModalOpen(true)} onOfferRules={() => alert("Offer Rules — coming soon")} />
 
-      {/* Quick stats */}
-      {(pendingCount + counteredCount) > 0 && (
-        <div className="flex gap-3">
-          {pendingCount > 0 && (
-            <button onClick={() => setFilters(f => ({ ...f, status: "pending" }))} className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[color:var(--color-warning)]/10 border border-[color:var(--color-warning)]/25 text-[color:var(--color-warning)] text-xs font-semibold cursor-pointer hover:bg-[color:var(--color-warning)]/20 transition-colors">
-              <span className="w-5 h-5 rounded-full bg-[color:var(--color-warning)]/20 flex items-center justify-center text-[10px] font-black">{pendingCount}</span>
-              Pending review
-            </button>
-          )}
-          {counteredCount > 0 && (
-            <button onClick={() => setFilters(f => ({ ...f, status: "countered" }))} className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-accent-cyan/10 border border-accent-cyan/25 text-accent-cyan text-xs font-semibold cursor-pointer hover:bg-accent-cyan/20 transition-colors">
-              <span className="w-5 h-5 rounded-full bg-accent-cyan/20 flex items-center justify-center text-[10px] font-black">{counteredCount}</span>
-              Awaiting customer
-            </button>
-          )}
-          {filters.status !== "all" && (
-            <button onClick={() => setFilters(f => ({ ...f, status: "all" }))} className="text-xs text-[color:var(--text-muted)] hover:text-foreground transition-colors px-2">
-              Clear filter ×
-            </button>
-          )}
-        </div>
-      )}
-
       <OffersToolbar
         filters={filters}
         onChange={patch => setFilters(prev => ({ ...prev, ...patch }))}
         total={displayed.length}
+        pendingCount={pendingCount}
+        counteredCount={counteredCount}
       />
 
       {filters.view === "table" ? (
         <OffersTable
           offers={displayed}
           onRowClick={setDrawerOffer}
-          onCounter={o => { setDrawerOffer(o); }}
+          onCounter={o => setDrawerOffer(o)}
           onAccept={handleAccept}
           onReject={handleReject}
           onArchive={handleArchive}
@@ -154,7 +132,7 @@ export default function OffersPage() {
               key={o.id}
               offer={o}
               onClick={setDrawerOffer}
-              onCounter={o2 => { setDrawerOffer(o2); }}
+              onCounter={o2 => setDrawerOffer(o2)}
               onAccept={handleAccept}
               onReject={handleReject}
             />
@@ -162,7 +140,9 @@ export default function OffersPage() {
           {displayed.length === 0 && (
             <div className="col-span-full bg-surface border border-[color:var(--border-subtle)] rounded-2xl py-20 text-center">
               <p className="text-base font-bold text-foreground mb-1">No offers found</p>
-              <p className="text-sm text-[color:var(--text-muted)]">Customer offers will appear here as they're submitted.</p>
+              <p className="text-sm text-[color:var(--text-muted)]">
+                Customer offers will appear here as they&apos;re submitted.
+              </p>
             </div>
           )}
         </div>

@@ -8,17 +8,9 @@ interface Props {
   filters: OfferFilters;
   onChange: (patch: Partial<OfferFilters>) => void;
   total: number;
+  pendingCount?: number;
+  counteredCount?: number;
 }
-
-const STATUS_OPTIONS = [
-  { value: "all", label: "All Status" },
-  { value: "pending", label: "Pending" },
-  { value: "countered", label: "Countered" },
-  { value: "accepted", label: "Accepted" },
-  { value: "rejected", label: "Rejected" },
-  { value: "expired", label: "Expired" },
-  { value: "withdrawn", label: "Withdrawn" },
-];
 
 const PRODUCT_TYPE_OPTIONS = [
   { value: "all", label: "All Types" },
@@ -35,7 +27,20 @@ const SORT_OPTIONS: { value: OfferSort; label: string }[] = [
   { value: "closing_soon", label: "Closing Soon" },
 ];
 
-export default function OffersToolbar({ filters, onChange, total }: Props) {
+export default function OffersToolbar({
+  filters, onChange, total,
+  pendingCount = 0, counteredCount = 0,
+}: Props) {
+  const statusOptions = [
+    { value: "all", label: "All Status" },
+    { value: "pending", label: pendingCount > 0 ? `Pending (${pendingCount})` : "Pending" },
+    { value: "countered", label: counteredCount > 0 ? `Countered (${counteredCount})` : "Countered" },
+    { value: "accepted", label: "Accepted" },
+    { value: "rejected", label: "Rejected" },
+    { value: "expired", label: "Expired" },
+    { value: "withdrawn", label: "Withdrawn" },
+  ];
+
   return (
     <Toolbar>
       <Toolbar.Search
@@ -46,7 +51,7 @@ export default function OffersToolbar({ filters, onChange, total }: Props) {
       <Toolbar.Select
         value={filters.status}
         onChange={v => onChange({ status: v as OfferStatus | "all" })}
-        options={STATUS_OPTIONS}
+        options={statusOptions}
       />
       <Toolbar.Select
         value={filters.productType}
