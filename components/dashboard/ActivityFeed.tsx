@@ -55,10 +55,10 @@ function timeAgo(timestamp: string): string {
 function ActivityRow({ item }: { item: ActivityItem }) {
   const cfg = TYPE_CONFIG[item.type];
   return (
-    <div className="flex items-start gap-3 py-3 border-b border-[#1a2038] transition-colors duration-150 hover:bg-elevated/30 px-2 -mx-2 rounded-lg">
+    <div className="flex items-start gap-3 py-3 border-b border-[#1a2038] transition-colors duration-150 hover:bg-elevated/30 px-2 -mx-2 rounded-[10px]">
       {/* Icon */}
       <div
-        className="w-8 h-8 rounded-lg flex-shrink-0 flex items-center justify-center"
+        className="w-8 h-8 rounded-[10px] flex-shrink-0 flex items-center justify-center"
         style={{ background: cfg.bg, color: cfg.color }}
       >
         {cfg.icon}
@@ -89,7 +89,7 @@ function ActivityRow({ item }: { item: ActivityItem }) {
 
 export default function ActivityFeed({ items }: Props) {
   return (
-    <div className="bg-surface border border-[color:var(--border-subtle)] rounded-[18px] p-6">
+    <div className="bg-surface border border-[color:var(--border-subtle)] rounded-[10px] p-6">
       <div className="flex items-center justify-between mb-5">
         <div>
           <div className="text-[11px] font-semibold tracking-[0.08em] uppercase text-[color:var(--text-muted)] mb-1">
@@ -98,7 +98,7 @@ export default function ActivityFeed({ items }: Props) {
           <div className="text-lg font-bold text-foreground">Live Updates</div>
         </div>
         <div className="flex items-center gap-1.5">
-          <span className="inline-block w-1.5 h-1.5 rounded-full bg-success shadow-[0_0_6px_#34d399]" />
+          <span className="inline-block w-1.5 h-1.5 rounded-[10px] bg-success shadow-[0_0_6px_#34d399]" />
           <span className="text-xs text-success font-semibold">Live</span>
           <Activity size={14} className="text-[color:var(--text-muted)] ml-1" />
         </div>

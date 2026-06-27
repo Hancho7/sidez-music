@@ -61,7 +61,7 @@ function CustomTooltip({ active, payload, label, granularity }: {
   const val = payload[0].value;
   const formatted = label ? formatDate(label, granularity) : "";
   return (
-    <div className="bg-elevated border border-[#31386d] rounded-lg px-3.5 py-2.5 text-sm">
+    <div className="bg-elevated border border-[#31386d] rounded-[10px] px-3.5 py-2.5 text-sm">
       <div className="text-[color:var(--text-muted)] mb-1 text-xs">{formatted}</div>
       <div className="text-foreground font-bold text-[16px] tracking-[-0.02em]">
         ${val.toLocaleString()}
@@ -89,7 +89,7 @@ export default function RevenueChartSection({ data }: Props) {
   ];
 
   return (
-    <div className="bg-surface border border-[color:var(--border-subtle)] rounded-[18px] p-6">
+    <div className="bg-surface border border-[color:var(--border-subtle)] rounded-[10px] p-6">
       {/* Header */}
       <div className="flex items-start justify-between mb-6 flex-wrap gap-3">
         <div>
@@ -105,14 +105,14 @@ export default function RevenueChartSection({ data }: Props) {
         </div>
 
         {/* Granularity toggle */}
-        <div className="flex bg-input border border-[color:var(--border-subtle)] rounded-lg p-[3px] gap-0.5">
+        <div className="flex bg-input border border-[color:var(--border-subtle)] rounded-[10px] p-[3px] gap-0.5">
           {toggles.map(t => (
             <button
               key={t.value}
               onClick={() => setGranularity(t.value)}
-              className={`px-3.5 py-1.5 rounded-[7px] border-0 cursor-pointer text-sm font-semibold transition-colors duration-150
+              className={`px-3.5 py-1.5 rounded-[10px] border-0 cursor-pointer text-sm font-semibold transition-colors duration-150
                 ${granularity === t.value
-                  ? "bg-accent text-white"
+                  ? "bg-accent text-black"
                   : "bg-transparent text-[color:var(--text-muted)] hover:text-foreground"
                 }`}
             >

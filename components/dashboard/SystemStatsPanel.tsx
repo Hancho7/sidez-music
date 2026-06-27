@@ -43,7 +43,7 @@ const STAT_ITEMS = [
 
 export default function SystemStatsPanel({ stats }: Props) {
   return (
-    <div className="bg-surface border border-[color:var(--border-subtle)] rounded-[18px] p-6">
+    <div className="bg-surface border border-[color:var(--border-subtle)] rounded-[10px] p-6">
       <div className="mb-5">
         <div className="text-[11px] font-semibold tracking-[0.08em] uppercase text-[color:var(--text-muted)] mb-1">
           System Overview
@@ -59,10 +59,10 @@ export default function SystemStatsPanel({ stats }: Props) {
           return (
             <div
               key={item.key}
-              className="bg-input border border-[color:var(--border-subtle)] rounded-xl p-4 flex flex-col gap-2.5 transition-colors duration-150 hover:border-[color:var(--border-default)]"
+              className="bg-input border border-[color:var(--border-subtle)] rounded-[10px] p-4 flex flex-col gap-2.5 transition-colors duration-150 hover:border-[color:var(--border-default)]"
             >
               <div
-                className="w-[34px] h-[34px] rounded-lg flex items-center justify-center"
+                className="w-[34px] h-[34px] rounded-[10px] flex items-center justify-center"
                 style={{ background: item.bg, color: item.color }}
               >
                 {item.icon}

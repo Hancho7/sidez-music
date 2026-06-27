@@ -19,7 +19,7 @@ function fmtPlays(n: number) {
 
 export default function TopTracksTable({ tracks }: Props) {
   return (
-    <div className="bg-surface border border-[color:var(--border-subtle)] rounded-[18px] p-6">
+    <div className="bg-surface border border-[color:var(--border-subtle)] rounded-[10px] p-6">
       <div className="flex items-center justify-between mb-5">
         <div>
           <div className="text-[11px] font-semibold tracking-[0.08em] uppercase text-[color:var(--text-muted)] mb-1">
@@ -27,7 +27,7 @@ export default function TopTracksTable({ tracks }: Props) {
           </div>
           <div className="text-lg font-bold text-foreground">By Revenue</div>
         </div>
-        <div className="w-9 h-9 rounded-lg bg-accent/15 flex items-center justify-center">
+        <div className="w-9 h-9 rounded-[10px] bg-accent/15 flex items-center justify-center">
           <Music2 size={16} className="text-accent" />
         </div>
       </div>

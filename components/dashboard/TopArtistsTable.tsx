@@ -19,7 +19,7 @@ function initials(name: string) {
 
 export default function TopArtistsTable({ artists }: Props) {
   return (
-    <div className="bg-surface border border-[color:var(--border-subtle)] rounded-[18px] p-6">
+    <div className="bg-surface border border-[color:var(--border-subtle)] rounded-[10px] p-6">
       <div className="flex items-center justify-between mb-5">
         <div>
           <div className="text-[11px] font-semibold tracking-[0.08em] uppercase text-[color:var(--text-muted)] mb-1">
@@ -27,7 +27,7 @@ export default function TopArtistsTable({ artists }: Props) {
           </div>
           <div className="text-lg font-bold text-foreground">By Revenue</div>
         </div>
-        <div className="w-9 h-9 rounded-lg bg-accent-cyan/12 flex items-center justify-center">
+        <div className="w-9 h-9 rounded-[10px] bg-accent-cyan/12 flex items-center justify-center">
           <Mic2 size={16} className="text-accent-cyan" />
         </div>
       </div>
@@ -45,12 +45,12 @@ export default function TopArtistsTable({ artists }: Props) {
         {artists.map((artist, i) => (
           <div
             key={artist.name}
-            className="grid grid-cols-4 items-center px-2 py-2.5 rounded-lg border-b border-[#1a2038] transition-colors duration-150 cursor-default hover:bg-elevated"
+            className="grid grid-cols-4 items-center px-2 py-2.5 rounded-[10px] border-b border-[#1a2038] transition-colors duration-150 cursor-default hover:bg-elevated"
           >
             {/* Artist name + avatar */}
             <div className="flex items-center gap-2.5">
               <div
-                className="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-bold text-white flex-shrink-0"
+                className="w-8 h-8 rounded-[10px] flex items-center justify-center text-[11px] font-bold text-white flex-shrink-0"
                 style={{ background: ARTIST_COLORS[i % ARTIST_COLORS.length] }}
               >
                 {initials(artist.name)}
@@ -63,7 +63,7 @@ export default function TopArtistsTable({ artists }: Props) {
             <span className="text-sm font-semibold text-success">{fmt(artist.revenue)}</span>
 
             <div className="flex items-center gap-1.5">
-              <span className="px-2 py-0.5 rounded-full bg-accent/15 text-accent text-xs font-semibold">
+              <span className="px-2 py-0.5 rounded-[10px] bg-accent/15 text-accent text-xs font-semibold">
                 {artist.tracks}
               </span>
             </div>

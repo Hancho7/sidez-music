@@ -3,7 +3,7 @@
 function Pulse({ className, style }: { className?: string; style?: React.CSSProperties }) {
   return (
     <div
-      className={`bg-gradient-to-r from-[#1a1f3a] via-[#242b50] to-[#1a1f3a] bg-[length:200%_100%] animate-[shimmer_1.6s_infinite] rounded-lg ${className || ""}`}
+      className={`bg-gradient-to-r from-[#1a1f3a] via-[#242b50] to-[#1a1f3a] bg-[length:200%_100%] animate-[shimmer_1.6s_infinite] rounded-[10px] ${className || ""}`}
       style={style}
     />
   );
@@ -15,7 +15,7 @@ export function KpiSkeleton() {
       <style>{`@keyframes shimmer { 0% { background-position: 200% 0 } 100% { background-position: -200% 0 } }`}</style>
       <div className="grid gap-4" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))" }}>
         {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="bg-surface border border-[color:var(--border-subtle)] rounded-[16px] p-5 flex flex-col gap-3.5">
+          <div key={i} className="bg-surface border border-[color:var(--border-subtle)] rounded-[10px] p-5 flex flex-col gap-3.5">
             <div className="flex justify-between">
               <div className="flex flex-col gap-2">
                 <Pulse style={{ width: 80, height: 10 }} />
@@ -33,7 +33,7 @@ export function KpiSkeleton() {
 
 export function ChartSkeleton() {
   return (
-    <div className="bg-surface border border-[color:var(--border-subtle)] rounded-[18px] p-6">
+    <div className="bg-surface border border-[color:var(--border-subtle)] rounded-[10px] p-6">
       <div className="flex justify-between mb-6">
         <div className="flex flex-col gap-2">
           <Pulse style={{ width: 120, height: 10 }} />
@@ -49,7 +49,7 @@ export function ChartSkeleton() {
 
 export function TableSkeleton() {
   return (
-    <div className="bg-surface border border-[color:var(--border-subtle)] rounded-[18px] p-6">
+    <div className="bg-surface border border-[color:var(--border-subtle)] rounded-[10px] p-6">
       <div className="flex justify-between items-center mb-5">
         <div className="flex flex-col gap-2">
           <Pulse style={{ width: 80, height: 10 }} />
@@ -73,7 +73,7 @@ export function TableSkeleton() {
 
 export function ActivitySkeleton() {
   return (
-    <div className="bg-surface border border-[color:var(--border-subtle)] rounded-[18px] p-6">
+    <div className="bg-surface border border-[color:var(--border-subtle)] rounded-[10px] p-6">
       <div className="flex justify-between items-center mb-5">
         <div className="flex flex-col gap-2">
           <Pulse style={{ width: 80, height: 10 }} />
@@ -97,14 +97,14 @@ export function ActivitySkeleton() {
 
 export function SystemSkeleton() {
   return (
-    <div className="bg-surface border border-[color:var(--border-subtle)] rounded-[18px] p-6">
+    <div className="bg-surface border border-[color:var(--border-subtle)] rounded-[10px] p-6">
       <div className="flex flex-col gap-2 mb-5">
         <Pulse style={{ width: 100, height: 10 }} />
         <Pulse style={{ width: 140, height: 18 }} />
       </div>
       <div className="grid grid-cols-2 gap-3">
         {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="bg-input border border-[color:var(--border-subtle)] rounded-xl p-4 flex flex-col gap-2.5">
+          <div key={i} className="bg-input border border-[color:var(--border-subtle)] rounded-[10px] p-4 flex flex-col gap-2.5">
             <Pulse style={{ width: 34, height: 34, borderRadius: 9 }} />
             <div className="flex flex-col gap-1.5">
               <Pulse style={{ width: 80, height: 20 }} />

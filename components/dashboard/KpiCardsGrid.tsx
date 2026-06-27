@@ -77,7 +77,7 @@ function Sparkline({ data, accent }: { data: number[]; accent: string }) {
 function KpiCard({ label, value, change, sparkline, accent }: KpiCardProps) {
   const positive = change >= 0;
   return (
-    <div className="bg-surface border border-[color:var(--border-subtle)] rounded-2xl p-5 flex flex-col gap-3.5 transition-all duration-200 hover:border-[color:var(--border-default)] hover:-translate-y-0.5 cursor-default">
+    <div className="bg-surface border border-[color:var(--border-subtle)] rounded-[10px] p-5 flex flex-col gap-3.5 transition-all duration-200 hover:border-[color:var(--border-default)] hover:-translate-y-0.5 cursor-default">
       <div className="flex items-start justify-between">
         <div className="flex flex-col gap-1">
           <span className="text-[11px] font-semibold tracking-widest uppercase text-[color:var(--text-muted)]">
@@ -90,7 +90,7 @@ function KpiCard({ label, value, change, sparkline, accent }: KpiCardProps) {
         <Sparkline data={sparkline} accent={accent} />
       </div>
       <div className="flex items-center gap-1.5">
-        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold
+        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-[10px] text-xs font-semibold
           ${positive ? "bg-success/10 text-success" : "bg-danger/10 text-danger"}`}
         >
           {positive ? <TrendingUp size={11} /> : <TrendingDown size={11} />}
