@@ -1,5 +1,18 @@
 // services/customers/mock-data.ts
-import type { Customer, CustomerDetail, CustomerAnalytics } from "./types";
+import type {
+  Customer,
+  CustomerDetail,
+  CustomerAnalytics,
+  CustomerStatus,
+  CustomerSort,
+  CustomerOrder,
+  CustomerLicense,
+  CustomerDownload,
+  CustomerCoupon,
+  CustomerOffer,
+  CustomerActivity,
+  CustomerNote
+} from "./types";
 
 const NOW = new Date();
 const TODAY = new Date(NOW);
@@ -25,6 +38,7 @@ function randomItem<T>(arr: T[]): T {
 function generateCustomer(index: number): Customer {
   const firstName = randomItem(FIRST_NAMES);
   const lastName = randomItem(LAST_NAMES);
+  // Fix: Import CustomerStatus from types
   const statuses: CustomerStatus[] = ["ACTIVE", "ACTIVE", "ACTIVE", "INACTIVE", "SUSPENDED", "ACTIVE", "ACTIVE"];
   const joinedDays = 30 + Math.floor(Math.random() * 365);
 
@@ -62,6 +76,18 @@ const GENRES = ["Hip-Hop", "Trap", "R&B", "Afrobeats", "Drill", "Electronic", "L
 const ARTISTS = ["KXNG Nova", "Aura Keys", "Luma Sol", "Phasma", "Solaris", "Wavez", "DJ Karma", "Lyric Beats"];
 const LICENSE_TYPES = ["Basic", "Premium", "Unlimited", "Exclusive"];
 
+// Helper to generate random order status with proper typing
+function randomOrderStatus(): CustomerOrder["status"] {
+  const statuses: CustomerOrder["status"][] = ["PAID", "PAID", "PAID", "PENDING", "PAID", "REFUNDED"];
+  return statuses[Math.floor(Math.random() * statuses.length)];
+}
+
+// Helper to generate random license status with proper typing
+function randomLicenseStatus(): CustomerLicense["status"] {
+  const statuses: CustomerLicense["status"][] = ["ACTIVE", "ACTIVE", "ACTIVE", "EXPIRED", "ACTIVE", "REVOKED"];
+  return statuses[Math.floor(Math.random() * statuses.length)];
+}
+
 function generateOrders(customerId: string, count: number): CustomerDetail["orders"] {
   return Array.from({ length: count }, (_, i) => ({
     id: `ord_${customerId}_${i}`,
@@ -69,7 +95,7 @@ function generateOrders(customerId: string, count: number): CustomerDetail["orde
     date: randomDate(60),
     items: 1 + Math.floor(Math.random() * 3),
     amount: 20 + Math.random() * 280,
-    status: ["PAID", "PAID", "PAID", "PENDING", "PAID", "REFUNDED"][i % 6] as any,
+    status: randomOrderStatus(),
   }));
 }
 
@@ -81,7 +107,7 @@ function generateLicenses(customerId: string, count: number): CustomerDetail["li
     licenseType: randomItem(LICENSE_TYPES),
     purchaseDate: randomDate(90),
     downloadCount: Math.floor(Math.random() * 5),
-    status: ["ACTIVE", "ACTIVE", "ACTIVE", "EXPIRED", "ACTIVE", "REVOKED"][i % 6] as any,
+    status: randomLicenseStatus(),
     expiresAt: Math.random() > 0.5 ? new Date(Date.now() + Math.random() * 365 * 24 * 60 * 60 * 1000).toISOString() : null,
   }));
 }
@@ -112,7 +138,7 @@ function generateCoupons(customerId: string): CustomerDetail["coupons"] {
 }
 
 function generateOffers(customerId: string): CustomerDetail["offers"] {
-  const types: Array<"SUBMITTED" | "ACCEPTED" | "REJECTED"> = ["SUBMITTED", "ACCEPTED", "REJECTED"];
+  const types: CustomerOffer["type"][] = ["SUBMITTED", "ACCEPTED", "REJECTED"];
   const count = Math.floor(Math.random() * 2);
   return Array.from({ length: count }, (_, i) => ({
     id: `off_${customerId}_${i}`,
@@ -124,7 +150,7 @@ function generateOffers(customerId: string): CustomerDetail["offers"] {
 }
 
 function generateActivities(customerId: string): CustomerDetail["activities"] {
-  const types: Array<CustomerDetail["activities"][0]["type"]> =
+  const types: CustomerActivity["type"][] =
     ["REGISTRATION", "PURCHASE", "DOWNLOAD", "COUPON", "OFFER", "REFUND", "PROFILE_UPDATE"];
   const count = 3 + Math.floor(Math.random() * 5);
   return Array.from({ length: count }, (_, i) => ({
@@ -175,7 +201,7 @@ export const MOCK_CUSTOMER_DETAILS: Record<string, CustomerDetail> = {};
 MOCK_CUSTOMERS.forEach(c => {
   const orderCount = c.totalOrders;
   const licenseCount = c.ownedLicenses;
-  const downloadCount = c.downloads;
+  const downloadCount = c.totalDownloads; // Fix: Use totalDownloads instead of downloads
 
   MOCK_CUSTOMER_DETAILS[c.id] = {
     ...c,
@@ -190,6 +216,7 @@ MOCK_CUSTOMERS.forEach(c => {
   };
 });
 
+// Fix: Use imported CustomerStatus and CustomerSort types
 export function getMockCustomers(filters: {
   search?: string;
   status?: CustomerStatus | "all";

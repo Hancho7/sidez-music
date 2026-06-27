@@ -21,11 +21,6 @@ export default function CustomersHeader({ total, onExport, onCreate }: Props) {
         </h1>
         <p className="mt-1.5 text-sm text-[color:var(--text-secondary)]">
           Manage buyers, purchase history, and customer relationships.
-          {total > 0 && (
-            <span className="ml-2.5 text-xs font-semibold bg-accent/15 text-accent px-2 py-0.5 rounded-full">
-              {total} customers
-            </span>
-          )}
         </p>
       </div>
 
