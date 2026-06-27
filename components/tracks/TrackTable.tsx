@@ -115,7 +115,7 @@ export default function TrackTable({
 
                 {/* Cover */}
                 <DataTable.Cell>
-                  <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-gradient-to-br from-elevated to-input flex items-center justify-center border border-[color:var(--border-subtle)]">
+                  <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 bg-gradient-to-br from-elevated to-input flex items-center justify-center border border-[color:var(--border-subtle)]">
                     {track.coverImage
                       ? <img src={track.coverImage} alt={track.title} className="w-full h-full object-cover" />
                       : <Music2 size={16} className="text-[color:var(--text-muted)]" />
@@ -149,7 +149,7 @@ export default function TrackTable({
 
                 {/* Key */}
                 <DataTable.Cell align="center">
-                  <span className="inline-block px-2 py-0.5 rounded-md bg-accent-cyan/10 text-accent-cyan text-[11px] font-bold tracking-[0.03em]">
+                  <span className="inline-block px-2 py-0.5 rounded-[10px] bg-accent-cyan/10 text-accent-cyan text-[11px] font-bold tracking-[0.03em]">
                     {track.key}
                   </span>
                 </DataTable.Cell>

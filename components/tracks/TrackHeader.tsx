@@ -32,13 +32,13 @@ export default function TrackHeader({ onUpload, selectedCount, onBulkArchive, on
             </span>
             <button
               onClick={onBulkArchive}
-              className="px-3.5 py-2 rounded-lg border border-[#31386d] bg-transparent text-[color:var(--text-secondary)] text-sm font-semibold cursor-pointer transition-all hover:bg-elevated hover:text-foreground"
+              className="px-3.5 py-2 rounded-[10px] border border-[#31386d] bg-transparent text-[color:var(--text-secondary)] text-sm font-semibold cursor-pointer transition-all hover:bg-elevated hover:text-foreground"
             >
               Archive
             </button>
             <button
               onClick={onBulkDelete}
-              className="px-3.5 py-2 rounded-lg border border-danger/30 bg-danger/10 text-danger text-sm font-semibold cursor-pointer transition-all hover:bg-danger/20"
+              className="px-3.5 py-2 rounded-[10px] border border-danger/30 bg-danger/10 text-danger text-sm font-semibold cursor-pointer transition-all hover:bg-danger/20"
             >
               Delete
             </button>

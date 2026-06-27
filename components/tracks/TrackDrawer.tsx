@@ -33,8 +33,8 @@ function MetaChip({ label, value }: { label: string; value: string | number }) {
 
 function StatCard({ icon, label, value, color }: { icon: React.ReactNode; label: string; value: string; color: string }) {
   return (
-    <div className="bg-input border border-[color:var(--border-subtle)] rounded-xl p-3.5 flex flex-col gap-2.5">
-      <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: `${color}18`, color }}>
+    <div className="bg-input border border-[color:var(--border-subtle)] rounded-[10px] p-3.5 flex flex-col gap-2.5">
+      <div className="w-8 h-8 rounded-[10px] flex items-center justify-center" style={{ background: `${color}18`, color }}>
         {icon}
       </div>
       <div>
@@ -91,7 +91,7 @@ export default function TrackDrawer({ track, onClose, onEdit }: Props) {
         {/* Top bar */}
         <div className="flex items-center justify-between px-5 py-4.5 border-b border-[color:var(--border-subtle)] flex-shrink-0">
           <div className="flex items-center gap-2.5">
-            <div className="w-[34px] h-[34px] rounded-lg bg-accent/12 flex items-center justify-center">
+            <div className="w-[34px] h-[34px] rounded-[10px] bg-accent/12 flex items-center justify-center">
               <Music2 size={16} className="text-accent" />
             </div>
             <div>
@@ -102,13 +102,13 @@ export default function TrackDrawer({ track, onClose, onEdit }: Props) {
           <div className="flex items-center gap-2">
             <button
               onClick={() => onEdit(track)}
-              className="px-3.5 py-1.5 rounded-lg border border-[#31386d] bg-transparent text-[color:var(--text-secondary)] text-xs font-semibold cursor-pointer transition-all hover:bg-elevated hover:text-foreground"
+              className="px-3.5 py-1.5 rounded-[10px] border border-[#31386d] bg-transparent text-[color:var(--text-secondary)] text-xs font-semibold cursor-pointer transition-all hover:bg-elevated hover:text-foreground"
             >
               Edit
             </button>
             <button
               onClick={onClose}
-              className="w-8 h-8 rounded-lg border-0 bg-transparent cursor-pointer flex items-center justify-center text-[color:var(--text-muted)] transition-all hover:bg-elevated hover:text-foreground"
+              className="w-8 h-8 rounded-[10px] border-0 bg-transparent cursor-pointer flex items-center justify-center text-[color:var(--text-muted)] transition-all hover:bg-elevated hover:text-foreground"
             >
               <X size={16} />
             </button>
@@ -139,8 +139,8 @@ export default function TrackDrawer({ track, onClose, onEdit }: Props) {
           {tab === "overview" && (
             <div className="flex flex-col gap-5">
               {/* Cover placeholder */}
-              <div className="w-full aspect-[16/7] rounded-xl bg-gradient-to-br from-elevated to-input border border-[color:var(--border-subtle)] flex flex-col items-center justify-center gap-2.5">
-                <div className="w-[52px] h-[52px] rounded-[14px] bg-accent/12 flex items-center justify-center">
+              <div className="w-full aspect-[16/7] rounded-[10px] bg-gradient-to-br from-elevated to-input border border-[color:var(--border-subtle)] flex flex-col items-center justify-center gap-2.5">
+                <div className="w-[52px] h-[52px] rounded-[10px] bg-accent/12 flex items-center justify-center">
                   <Music2 size={22} className="text-accent" />
                 </div>
                 <span className="text-xs text-[color:var(--text-muted)]">No cover image</span>
@@ -148,12 +148,12 @@ export default function TrackDrawer({ track, onClose, onEdit }: Props) {
 
               {/* Status + featured */}
               <div className="flex items-center gap-2.5">
-                <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${statusStyle.bg} ${statusStyle.color}`}>
-                  <span className="w-1.5 h-1.5 rounded-full bg-current" />
+                <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-[10px] text-xs font-semibold ${statusStyle.bg} ${statusStyle.color}`}>
+                  <span className="w-1.5 h-1.5 rounded-[10px] bg-current" />
                   {track.status.charAt(0).toUpperCase() + track.status.slice(1)}
                 </span>
                 {track.isFeatured && (
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[color:var(--color-warning)]/10 text-[color:var(--color-warning)]">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-[10px] text-xs font-semibold bg-[color:var(--color-warning)]/10 text-[color:var(--color-warning)]">
                     <Star size={10} fill="currentColor" />
                     Featured
                   </span>
@@ -168,7 +168,7 @@ export default function TrackDrawer({ track, onClose, onEdit }: Props) {
               )}
 
               {/* Metadata grid */}
-              <div className="grid grid-cols-3 gap-4 px-4 py-4 bg-input rounded-xl border border-[color:var(--border-subtle)]">
+              <div className="grid grid-cols-3 gap-4 px-4 py-4 bg-input rounded-[10px] border border-[color:var(--border-subtle)]">
                 <MetaChip label="BPM" value={track.bpm} />
                 <MetaChip label="Key" value={track.key} />
                 <MetaChip label="Duration" value={fmtDuration(track.duration)} />
@@ -183,7 +183,7 @@ export default function TrackDrawer({ track, onClose, onEdit }: Props) {
                   <div className="text-[11px] font-semibold tracking-[0.08em] uppercase text-[color:var(--text-muted)] mb-2">Mood</div>
                   <div className="flex gap-1.5 flex-wrap">
                     {track.mood.map(m => (
-                      <span key={m} className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-accent/10 text-accent border border-accent/20">
+                      <span key={m} className="px-2.5 py-0.5 rounded-[10px] text-xs font-medium bg-accent/10 text-accent border border-accent/20">
                         {m}
                       </span>
                     ))}
@@ -192,13 +192,13 @@ export default function TrackDrawer({ track, onClose, onEdit }: Props) {
               )}
 
               {/* Audio player placeholder */}
-              <div className="bg-input border border-[color:var(--border-subtle)] rounded-xl px-4 py-4 flex items-center gap-3.5">
+              <div className="bg-input border border-[color:var(--border-subtle)] rounded-[10px] px-4 py-4 flex items-center gap-3.5">
                 <button className="w-10 h-10 rounded-full bg-accent border-0 cursor-pointer flex items-center justify-center flex-shrink-0">
-                  <Play size={16} fill="#fff" color="#fff" className="ml-0.5" />
+                  <Play size={16} fill="#000" color="#fff" className="ml-0.5" />
                 </button>
                 <div className="flex-1">
-                  <div className="h-0.5 bg-[#1a1f3a] rounded-full overflow-hidden">
-                    <div className="w-[35%] h-full bg-gradient-to-r from-accent to-[color:var(--accent-magenta)] rounded-full" />
+                  <div className="h-0.5 bg-[#1a1f3a] rounded-[10px] overflow-hidden">
+                    <div className="w-[35%] h-full bg-gradient-to-r from-accent to-[color:var(--accent-magenta)] rounded-[10px]" />
                   </div>
                   <div className="flex justify-between mt-1.5">
                     <span className="text-[11px] text-[color:var(--text-muted)]">0:42</span>
@@ -228,10 +228,10 @@ export default function TrackDrawer({ track, onClose, onEdit }: Props) {
                 const TIER_COLORS = ["#7c3aed", "#06b6d4", "#ec4899", "#f59e0b"];
                 const c = TIER_COLORS[i % TIER_COLORS.length];
                 return (
-                  <div key={lic.id} className="bg-input border border-[color:var(--border-subtle)] rounded-xl overflow-hidden">
+                  <div key={lic.id} className="bg-input border border-[color:var(--border-subtle)] rounded-[10px] overflow-hidden">
                     <div className="flex items-center justify-between px-4 py-3.5 border-b border-[#1a2038]">
                       <div className="flex items-center gap-2.5">
-                        <div className="w-7.5 h-7.5 rounded-lg flex items-center justify-center" style={{ background: `${c}18` }}>
+                        <div className="w-7.5 h-7.5 rounded-[10px] flex items-center justify-center" style={{ background: `${c}18` }}>
                           <Scroll size={13} color={c} />
                         </div>
                         <span className="font-bold text-foreground text-sm">{lic.name}</span>
@@ -277,7 +277,7 @@ export default function TrackDrawer({ track, onClose, onEdit }: Props) {
               </div>
 
               {/* Conversion rate */}
-              <div className="bg-input border border-[color:var(--border-subtle)] rounded-xl px-4 py-4">
+              <div className="bg-input border border-[color:var(--border-subtle)] rounded-[10px] px-4 py-4">
                 <div className="flex items-center justify-between mb-2.5">
                   <div className="flex items-center gap-2">
                     <TrendingUp size={14} className="text-[color:var(--color-warning)]" />
@@ -285,9 +285,9 @@ export default function TrackDrawer({ track, onClose, onEdit }: Props) {
                   </div>
                   <span className="text-lg font-bold text-[color:var(--color-warning)]">{conversionRate}%</span>
                 </div>
-                <div className="h-1.5 bg-[#1a1f3a] rounded-full overflow-hidden">
+                <div className="h-1.5 bg-[#1a1f3a] rounded-[10px] overflow-hidden">
                   <div
-                    className="h-full bg-gradient-to-r from-[#f59e0b] to-[#fbbf24] rounded-full transition-all duration-600"
+                    className="h-full bg-gradient-to-r from-[#f59e0b] to-[#fbbf24] rounded-[10px] transition-all duration-600"
                     style={{ width: `${Math.min(parseFloat(conversionRate) * 10, 100)}%` }}
                   />
                 </div>
@@ -297,7 +297,7 @@ export default function TrackDrawer({ track, onClose, onEdit }: Props) {
               </div>
 
               {/* Revenue per sale */}
-              <div className="bg-input border border-[color:var(--border-subtle)] rounded-xl px-4 py-4">
+              <div className="bg-input border border-[color:var(--border-subtle)] rounded-[10px] px-4 py-4">
                 <div className="text-[11px] font-semibold tracking-[0.08em] uppercase text-[color:var(--text-muted)] mb-2">
                   Avg. Revenue per Sale
                 </div>
@@ -309,7 +309,7 @@ export default function TrackDrawer({ track, onClose, onEdit }: Props) {
               </div>
 
               {/* License breakdown */}
-              <div className="bg-input border border-[color:var(--border-subtle)] rounded-xl px-4 py-4">
+              <div className="bg-input border border-[color:var(--border-subtle)] rounded-[10px] px-4 py-4">
                 <div className="text-[11px] font-semibold tracking-[0.08em] uppercase text-[color:var(--text-muted)] mb-3">
                   License Breakdown
                 </div>
@@ -323,8 +323,8 @@ export default function TrackDrawer({ track, onClose, onEdit }: Props) {
                         <span className="text-xs text-[color:var(--text-secondary)]">{lic.name}</span>
                         <span className="text-xs font-semibold text-foreground">{pct}%</span>
                       </div>
-                      <div className="h-1 bg-[#1a1f3a] rounded-full">
-                        <div className="h-full rounded-full" style={{ width: `${pct}%`, background: c }} />
+                      <div className="h-1 bg-[#1a1f3a] rounded-[10px]">
+                        <div className="h-full rounded-[10px]" style={{ width: `${pct}%`, background: c }} />
                       </div>
                     </div>
                   );
