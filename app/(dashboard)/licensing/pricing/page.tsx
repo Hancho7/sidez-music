@@ -87,7 +87,23 @@ export default function PricingPage() {
       <PricingTable
         rows={filtered}
         loading={false}
-        onSelect={id => setSelectedId(id)}
+        onSelect={(item) => setSelectedId(item.id)}
+        onEdit={(item) => {
+          setSelectedId(item.id);
+          // Open the drawer in edit mode
+          console.log("Edit:", item);
+        }}
+        onDuplicate={(item) => {
+          // Handle duplicate logic
+          console.log("Duplicate:", item);
+          // You might want to open a modal or navigate to a duplicate form
+        }}
+        onArchive={(item) => {
+          // Handle archive logic with confirmation
+          console.log("Archive:", item);
+          // You could show a confirmation dialog before archiving
+          setRows(prev => prev.filter(r => r.id !== item.id));
+        }}
       />
 
       <PricingDrawer

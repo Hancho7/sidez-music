@@ -3,15 +3,15 @@
 
 import { Eye, Pencil, Copy, Archive, DollarSign } from "lucide-react";
 import DataTable, { useHoveredRow } from "@/components/ui/DataTable";
-import type { TrackPricing, PricingStatus } from "@/services/pricing/types";
+import type { TrackPricing, PricingStatus, PricingRow } from "@/services/pricing/types";
 
 interface Props {
-  rows: TrackPricing[];
+  rows: PricingRow[];
   loading?: boolean;
-  onSelect: (item: TrackPricing) => void;
-  onEdit: (item: TrackPricing) => void;
-  onDuplicate: (item: TrackPricing) => void;
-  onArchive: (item: TrackPricing) => void;
+  onSelect: (item: PricingRow) => void;
+  onEdit: (item: PricingRow) => void;
+  onDuplicate: (item: PricingRow) => void;
+  onArchive: (item: PricingRow) => void;
 }
 
 const STATUS_META: Record<PricingStatus, {
@@ -77,17 +77,6 @@ export default function PricingTable({ rows, loading, onSelect, onEdit, onDuplic
             const isHovered = hoveredId === row.id;
 
             // Safely access licenses with fallback to empty array
-            const licenses = row.licenses ?? [];
-
-            // Find licenses by name
-            const basicLicense = licenses.find(l => l.licenseName === "Basic" || l.licenseName === "BASIC");
-            const premiumLicense = licenses.find(l => l.licenseName === "Premium" || l.licenseName === "PREMIUM");
-            const unlimLicense = licenses.find(l => l.licenseName === "Unlimited" || l.licenseName === "UNLIMITED");
-
-            const basicPrice = basicLicense?.overridePrice ?? basicLicense?.defaultPrice;
-            const premiumPrice = premiumLicense?.overridePrice ?? premiumLicense?.defaultPrice;
-            const unlimPrice = unlimLicense?.overridePrice ?? unlimLicense?.defaultPrice;
-            const exclusivePrice = row.exclusive?.price;
 
             const status = STATUS_META[row.status] ?? STATUS_META.MISSING;
 
@@ -127,16 +116,19 @@ export default function PricingTable({ rows, loading, onSelect, onEdit, onDuplic
 
                 {/* Price columns */}
                 <DataTable.Cell align="right" className="tabular-nums">
-                  {fmt(basicLicense?.isEnabled ? basicPrice : null)}
+                  {fmt(row.basicPrice)}
                 </DataTable.Cell>
+
                 <DataTable.Cell align="right" className="tabular-nums">
-                  {fmt(premiumLicense?.isEnabled ? premiumPrice : null)}
+                  {fmt(row.premiumPrice)}
                 </DataTable.Cell>
+
                 <DataTable.Cell align="right" className="tabular-nums">
-                  {fmt(unlimLicense?.isEnabled ? unlimPrice : null)}
+                  {fmt(row.unlimitedPrice)}
                 </DataTable.Cell>
+
                 <DataTable.Cell align="right" className="tabular-nums">
-                  {fmt(exclusivePrice)}
+                  {fmt(row.exclusivePrice)}
                 </DataTable.Cell>
 
                 {/* Status */}
