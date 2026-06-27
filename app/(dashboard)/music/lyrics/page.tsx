@@ -9,7 +9,7 @@ import MetadataTable from "@/components/lyrics/MetadataTable";
 import MetadataDrawer from "@/components/lyrics/MetadataDrawer";
 import MetadataFormModal from "@/components/lyrics/MetadataFormModal";
 import { MOCK_METADATA } from "@/services/lyrics/mock-data";
-import type { TrackMetadata, MetadataFilters, LyricsStatus } from "@/services/lyrics/types";
+import type { TrackMetadata, MetadataFilters, LyricsStatus, CreditFormData, CopyrightFormData, PublishingFormData, Language } from "@/services/lyrics/types";
 
 // ── Default Filters ──
 
@@ -81,18 +81,18 @@ function applyFilters(items: TrackMetadata[], filters: MetadataFilters): TrackMe
 
 // ── Page ──
 
-// Inline type matching what MetadataFormModal passes to onSave.
-// This mirrors the FormState interface defined in MetadataFormModal.
+// Mirrors FormState in MetadataFormModal — kept in sync so the onSave
+// signature is compatible without exporting FormState from the modal.
 interface SaveData {
   trackId: string;
   trackName: string;
   artistName: string;
-  language: TrackMetadata["lyrics"]["language"];
+  language: Language;
   lyrics: string;
   status: LyricsStatus;
-  credits: TrackMetadata["credits"];
-  copyright: TrackMetadata["copyright"];
-  publishing: TrackMetadata["publishing"];
+  credits: (CreditFormData & { id: string; trackId?: string })[];
+  copyright: CopyrightFormData;
+  publishing: PublishingFormData;
 }
 
 interface DrawerSaveData {
@@ -135,7 +135,20 @@ export default function LyricsPage() {
           item.id === id
             ? {
               ...item,
-              ...data,
+              trackName: data.trackName,
+              artistName: data.artistName,
+              // Reconstruct the nested lyrics object — never spread flat SaveData fields
+              // directly onto TrackMetadata, since `data.lyrics` is a string but
+              // `item.lyrics` is a TrackLyrics object.
+              lyrics: {
+                ...item.lyrics,
+                lyrics: data.lyrics,
+                language: data.language,
+              },
+              status: data.status,
+              credits: data.credits.map(c => ({ ...c, trackId: c.trackId ?? item.trackId })),
+              copyright: { ...item.copyright, ...data.copyright },
+              publishing: { ...item.publishing, ...data.publishing },
               lastUpdated: new Date().toISOString(),
               updatedBy: "Current User",
             }
@@ -143,7 +156,20 @@ export default function LyricsPage() {
         )
       );
       if (drawerItem?.id === id) {
-        setDrawerItem(prev => prev ? { ...prev, ...data } : null);
+        setDrawerItem(prev =>
+          prev
+            ? {
+              ...prev,
+              trackName: data.trackName,
+              artistName: data.artistName,
+              lyrics: { ...prev.lyrics, lyrics: data.lyrics, language: data.language },
+              status: data.status,
+              credits: data.credits.map(c => ({ ...c, trackId: c.trackId ?? prev.trackId })),
+              copyright: { ...prev.copyright, ...data.copyright },
+              publishing: { ...prev.publishing, ...data.publishing },
+            }
+            : null
+        );
       }
     } else {
       const now = new Date().toISOString();
@@ -164,32 +190,18 @@ export default function LyricsPage() {
           readingTime: 0,
           isSynchronized: false,
         },
-        credits: data.credits ?? [],
-        copyright: data.copyright ?? {
+        credits: data.credits.map(c => ({ ...c, trackId: c.trackId ?? data.trackId })) ?? [],
+        copyright: {
           id: `copy_${Date.now()}`,
           trackId: data.trackId,
-          copyrightOwner: "",
-          copyrightNotice: "",
-          publishingRights: "",
-          mechanicalRights: "",
-          territory: ["Worldwide"],
-          publishingOrganization: "",
-          isrc: "",
-          upc: "",
+          ...data.copyright,
         },
-        publishing: data.publishing ?? {
+        publishing: {
           id: `pub_${Date.now()}`,
           trackId: data.trackId,
-          releaseDate: now,
-          originalReleaseDate: now,
-          isVisible: true,
-          isExplicit: false,
-          isFeatured: false,
-          editorialNotes: "",
-          previewStartTime: 30,
-          previewDuration: 30,
+          ...data.publishing,
         },
-        status: (data.status as LyricsStatus) ?? "PENDING",
+        status: data.status ?? "PENDING",
         lastUpdated: now,
         updatedBy: "Current User",
         createdAt: now,
@@ -206,15 +218,12 @@ export default function LyricsPage() {
     const isArchived = item.archivedAt !== null;
     if (!isArchived && !window.confirm(`Archive metadata for "${item.trackName}"?`)) return;
 
-    // Restore to PENDING when un-archiving; keep the existing status when archiving
-    // (the caller can refine this; here we just ensure the type is correct).
     setMetadata(prev =>
       prev.map(m =>
         m.id === item.id
           ? {
             ...m,
             archivedAt: isArchived ? null : new Date().toISOString(),
-            // Restore PENDING on unarchive; keep existing status on archive.
             status: isArchived ? "PENDING" : m.status,
             lastUpdated: new Date().toISOString(),
           }
