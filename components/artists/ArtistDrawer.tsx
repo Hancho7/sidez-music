@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import type { Artist, SocialPlatform } from "@/services/artists/types";
 import { FaFacebook, FaInstagram, FaYoutube } from "react-icons/fa";
+import Button from "../ui/Button";
 
 interface Props {
   artist: Artist | null;
@@ -31,11 +32,7 @@ const SOCIAL_META: Record<SocialPlatform, { label: string; icon: React.ReactNode
   spotify: { label: "Spotify", icon: <Music2 size={14} />, color: "#1db954" },
   apple_music: { label: "Apple Music", icon: <Music2 size={14} />, color: "#fc3c44" },
   youtube: { label: "YouTube", icon: <FaYoutube size={14} />, color: "#ff0000" },
-  facebook: {
-    label: "Facebook",
-    icon: <FaFacebook size={14} />,
-    color: "#1877f2",
-  },
+  facebook: { label: "Facebook", icon: <FaFacebook size={14} />, color: "#1877f2" },
   soundcloud: { label: "SoundCloud", icon: <Music2 size={14} />, color: "#ff5500" },
   twitter: { label: "X (Twitter)", icon: <TrendingUp size={14} />, color: "#000000" },
   website: { label: "Website", icon: <Globe size={14} />, color: "#6366f1" },
@@ -60,12 +57,20 @@ const STATUS_TRACK: Record<string, string> = {
   archived: "bg-white/10 text-white/40",
 };
 
+// Contact row shape — typed explicitly to remove the `any` in the .filter(Boolean) chain.
+interface ContactRow {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  href: string | null;
+}
+
 export default function ArtistDrawer({ artist, onClose, onEdit }: Props) {
+
   const [tab, setTab] = useState<Tab>("profile");
 
-  useEffect(() => {
-    if (artist) setTab("profile");
-  }, [artist?.id]);
+
+  useEffect(() => { setTab("profile"); }, [artist?.id]);
 
   useEffect(() => {
     const h = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
@@ -74,6 +79,14 @@ export default function ArtistDrawer({ artist, onClose, onEdit }: Props) {
   }, [onClose]);
 
   if (!artist) return null;
+
+  const contactRows: ContactRow[] = ([
+    { icon: <Mail size={13} />, label: "Email", value: artist.email, href: `mailto:${artist.email}` },
+    artist.phone ? { icon: <Phone size={13} />, label: "Phone", value: artist.phone, href: `tel:${artist.phone}` } : null,
+    artist.website ? { icon: <Globe size={13} />, label: "Website", value: artist.website, href: artist.website } : null,
+    artist.managementCompany ? { icon: <Building2 size={13} />, label: "Management", value: artist.managementCompany, href: null } : null,
+    artist.bookingEmail ? { icon: <Mail size={13} />, label: "Booking", value: artist.bookingEmail, href: `mailto:${artist.bookingEmail}` } : null,
+  ] as (ContactRow | null)[]).filter((r): r is ContactRow => r !== null);
 
   return (
     <>
@@ -105,18 +118,10 @@ export default function ArtistDrawer({ artist, onClose, onEdit }: Props) {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => onEdit(artist)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[color:var(--border-default)] bg-transparent text-[color:var(--text-secondary)] text-xs font-semibold cursor-pointer transition-colors hover:bg-elevated hover:text-foreground"
-            >
-              <Pencil size={12} /> Edit
-            </button>
-            <button
-              onClick={onClose}
-              className="w-8 h-8 rounded-lg flex items-center justify-center bg-transparent border-0 cursor-pointer text-[color:var(--text-muted)] transition-colors hover:bg-elevated hover:text-foreground"
-            >
-              <X size={15} />
-            </button>
+            <Button size="sm" variant="ghost" icon={<Pencil size={12} />} onClick={() => onEdit(artist)}>
+              Edit
+            </Button>
+            <Button size="sm" variant="plain" icon={<X size={15} />} onClick={onClose} />
           </div>
         </div>
 
@@ -282,7 +287,6 @@ export default function ArtistDrawer({ artist, onClose, onEdit }: Props) {
           {/* ANALYTICS */}
           {tab === "analytics" && (
             <div className="flex flex-col gap-4">
-              {/* KPI cards */}
               <div className="grid grid-cols-2 gap-3">
                 {[
                   { label: "Total Sales", value: fmtNum(artist.totalSales), color: "text-success", icon: <ShoppingCart size={13} />, bg: "bg-success/10" },
@@ -302,7 +306,6 @@ export default function ArtistDrawer({ artist, onClose, onEdit }: Props) {
                 ))}
               </div>
 
-              {/* Conversion rate */}
               <div className="p-4 bg-[color:var(--bg-input)] rounded-xl border border-[color:var(--border-subtle)]">
                 <div className="flex items-center justify-between mb-2.5">
                   <span className="text-sm font-semibold text-foreground">Conversion Rate</span>
@@ -323,7 +326,6 @@ export default function ArtistDrawer({ artist, onClose, onEdit }: Props) {
                 </p>
               </div>
 
-              {/* Avg revenue per sale */}
               <div className="p-4 bg-[color:var(--bg-input)] rounded-xl border border-[color:var(--border-subtle)]">
                 <p className="text-[10px] font-semibold tracking-widest uppercase text-[color:var(--text-muted)] mb-2">Avg. Revenue per Sale</p>
                 <p className="text-2xl font-bold text-success tracking-tight">
@@ -338,17 +340,10 @@ export default function ArtistDrawer({ artist, onClose, onEdit }: Props) {
           {/* SOCIAL & CONTACT */}
           {tab === "social" && (
             <div className="flex flex-col gap-4">
-              {/* Contact */}
               <div>
                 <p className="text-[10px] font-semibold tracking-widest uppercase text-[color:var(--text-muted)] mb-3">Contact</p>
                 <div className="flex flex-col gap-2">
-                  {[
-                    { icon: <Mail size={13} />, label: "Email", value: artist.email, href: `mailto:${artist.email}` },
-                    artist.phone && { icon: <Phone size={13} />, label: "Phone", value: artist.phone, href: `tel:${artist.phone}` },
-                    artist.website && { icon: <Globe size={13} />, label: "Website", value: artist.website, href: artist.website },
-                    artist.managementCompany && { icon: <Building2 size={13} />, label: "Management", value: artist.managementCompany, href: null },
-                    artist.bookingEmail && { icon: <Mail size={13} />, label: "Booking", value: artist.bookingEmail, href: `mailto:${artist.bookingEmail}` },
-                  ].filter(Boolean).map((row: any) => (
+                  {contactRows.map(row => (
                     <div key={row.label} className="flex items-center gap-3 p-3 bg-[color:var(--bg-input)] rounded-xl border border-[color:var(--border-subtle)]">
                       <span className="text-[color:var(--text-muted)] flex-shrink-0">{row.icon}</span>
                       <div className="flex-1 min-w-0">
@@ -365,7 +360,6 @@ export default function ArtistDrawer({ artist, onClose, onEdit }: Props) {
                 </div>
               </div>
 
-              {/* Socials */}
               {artist.socials.length > 0 && (
                 <div>
                   <p className="text-[10px] font-semibold tracking-widest uppercase text-[color:var(--text-muted)] mb-3">Social Profiles</p>
